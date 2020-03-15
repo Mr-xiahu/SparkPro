@@ -13,6 +13,8 @@ object SparkSQL_01_Demo {
 
     val peopleDF: DataFrame = spark.read.json("in/people.json")
 
+
+    //注释
     peopleDF.show()
     //释放资源
     spark.stop()
