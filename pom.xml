@@ -11,7 +11,8 @@
     <modules>
         <module>A_Spark_Start</module>
         <module>B_Spark_Rdd</module>
-        <module>D_Spark_SQL</module>
+        <module>C_Spark_SQL</module>
+        <module>D_Spark_Streaming</module>
     </modules>
     <dependencies>
         <dependency>
@@ -24,6 +25,19 @@
             <artifactId>spark-sql_2.11</artifactId>
             <version>2.4.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming_2.11</artifactId>
+            <version>2.4.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming-kafka-0-8_2.11</artifactId>
+            <version>2.4.3</version>
+        </dependency>
+
+
+
     </dependencies>
     <build>
         <finalName>WordCount</finalName>
