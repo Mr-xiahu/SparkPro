@@ -11,6 +11,13 @@
 
     <groupId>cn.xhjava.spark</groupId>
     <artifactId>D_Spark_Streaming</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-core</artifactId>
+            <version>1.9.0</version>
+        </dependency>
+    </dependencies>
 
 
 </project>

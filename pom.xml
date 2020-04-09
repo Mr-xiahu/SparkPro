@@ -13,6 +13,7 @@
         <module>B_Spark_Rdd</module>
         <module>C_Spark_SQL</module>
         <module>D_Spark_Streaming</module>
+        <module>E_Spark_ principle_and_optimization</module>
     </modules>
     <dependencies>
         <dependency>
@@ -35,7 +36,6 @@
             <artifactId>spark-streaming-kafka-0-8_2.11</artifactId>
             <version>2.4.3</version>
         </dependency>
-
 
 
     </dependencies>
