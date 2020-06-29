@@ -1121,5 +1121,419 @@ object Spark_RDD_coGroup {
 
 ### 5.3 RDD的Action
 
+##### 5.3.1 reduce  
+
+~~~scala
+package cn.xhjava.spark.rdd.action
+
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkConf, SparkContext}
+
+/**
+  * 通过func函数聚集RDD中的所有元素，先聚合分区内数据，再聚合分区间数据
+  */
+object Spark_Action_reduce {
+  def main(args: Array[String]): Unit = {
+
+    val conf = new SparkConf().setMaster("local[3]").setAppName("Spark_Action_reduce")
+    val sc = new SparkContext(conf)
+    //创建RDD
+    val rdd: RDD[Int] = sc.makeRDD(1 to 10, 2)
+    //创建RDD2
+    val rdd2: RDD[(String, Int)] = sc.makeRDD(Array(("a", 1), ("a", 3), ("c", 3), ("d", 5)))
+
+    //聚合rdd内的所有元素
+    val reduceRDD: Int = rdd.reduce(_ + _)
+    println(reduceRDD)
+    //打印结果:55
+    //聚合rdd2[String]所有数据
+    val reduceRDD2: (String, Int) = rdd2.reduce((x,y) =>(x._1+y._1,x._2+y._2))
+    println(reduceRDD2)
+    //打印结果:(acda,12)
+
+  }
+}
+~~~
+
+##### 5.3.2 collect 
+
+~~~scala
+package cn.xhjava.spark.rdd.action
+
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkConf, SparkContext}
+
+/**
+  * 在驱动程序中，以数组的形式返回数据集的所有元素
+  */
+object Spark_Action_collect {
+  def main(args: Array[String]): Unit = {
+
+    val conf = new SparkConf().setMaster("local[3]").setAppName("Spark_Action_collect")
+    val sc = new SparkContext(conf)
+    //创建RDD
+    val rdd: RDD[Int] = sc.makeRDD(1 to 10, 2)
+
+    rdd.collect().foreach(println)
+    //打印结果:
+    //    1
+    //    2
+    //    3
+    //    4
+    //    5
+    //    6
+    //    7
+    //    8
+    //    9
+    //    10
+
+  }
+}
+~~~
+
+##### 5.3.3 count
+
+~~~scala
+package cn.xhjava.spark.rdd.action
+
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkConf, SparkContext}
+
+/**
+  * 返回RDD中元素的个数
+  */
+object Spark_Action_count {
+  def main(args: Array[String]): Unit = {
+
+    val conf = new SparkConf().setMaster("local[3]").setAppName("Spark_Action_count")
+    val sc = new SparkContext(conf)
+    //创建RDD
+    val rdd: RDD[Int] = sc.makeRDD(1 to 10, 2)
+
+    println(rdd.count())
+    //打印结果:10
+
+  }
+}
+
+~~~
+
+
+
+##### 5.3.4 first
+
+~~~scala
+package cn.xhjava.spark.rdd.action
+
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkConf, SparkContext}
+
+/**
+  * 返回RDD中元素的个数
+  */
+object Spark_Action_first {
+  def main(args: Array[String]): Unit = {
+
+    val conf = new SparkConf().setMaster("local[3]").setAppName("Spark_Action_first")
+    val sc = new SparkContext(conf)
+    //创建RDD
+    val rdd: RDD[Int] = sc.makeRDD(1 to 10, 2)
+
+    println(rdd.first())
+    //打印结果:1
+
+  }
+}
+
+~~~
+
+
+
+##### 5.3.5 take
+
+~~~scala
+package cn.xhjava.spark.rdd.action
+
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkConf, SparkContext}
+
+/**
+  * 返回一个由RDD的前n个元素组成的数组
+  */
+object Spark_Action_take {
+  def main(args: Array[String]): Unit = {
+
+    val conf = new SparkConf().setMaster("local[3]").setAppName("Spark_Action_take")
+    val sc = new SparkContext(conf)
+    //创建RDD
+    val rdd: RDD[Int] = sc.makeRDD(1 to 10, 2)
+
+    rdd.take(3).foreach(println)
+    //打印结果:
+    //1
+    //2
+    //3
+
+  }
+}
+
+~~~
+
+
+
+##### 5.3.6 takeOrdered
+
+~~~
+package cn.xhjava.spark.rdd.action
+
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkConf, SparkContext}
+
+/**
+  * 返回该RDD排序后的前n个元素组成的数组
+  */
+object Spark_Action_takeOrdered {
+  def main(args: Array[String]): Unit = {
+
+    val conf = new SparkConf().setMaster("local[3]").setAppName("Spark_Action_takeOrdered")
+    val sc = new SparkContext(conf)
+    //创建RDD
+    val rdd: RDD[Int] = sc.makeRDD(1 to 10, 2)
+
+    rdd.takeOrdered(4).foreach(println)
+    //打印结果:
+    //1
+    //2
+    //3
+    //4
+
+  }
+}
+
+~~~
+
+
+
+##### 5.3.7 aggregate 
+
+~~~scala
+package cn.xhjava.spark.rdd.action
+
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkConf, SparkContext}
+
+/**
+  * aggregate函数将每个分区里面的元素通过seqOp和初始值进行聚合，
+  * 然后用combine函数将每个分区的结果和初始值(zeroValue)进行combine操作。
+  * 这个函数最终返回的类型不需要和RDD中元素类型一致。
+  *
+  * 与aggregateByKey类似
+  */
+object Spark_Action_aggregate {
+  def main(args: Array[String]): Unit = {
+
+    val conf = new SparkConf().setMaster("local[3]").setAppName("Spark_Action_aggregate")
+    val sc = new SparkContext(conf)
+    //创建RDD
+    val rdd: RDD[Int] = sc.makeRDD(1 to 10, 2)
+
+    println(rdd.aggregate(0)(_ + _, _ + _))
+    //打印结果:55
+
+  }
+}
+
+~~~
+
+
+
+#####5.3.8 fold
+
+~~~scala
+package cn.xhjava.spark.rdd.action
+
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkConf, SparkContext}
+
+/**
+  * 折叠操作，aggregate的简化操作，seqop和combop一样
+  */
+object Spark_Action_fold {
+  def main(args: Array[String]): Unit = {
+
+    val conf = new SparkConf().setMaster("local[3]").setAppName("Spark_Action_fold")
+    val sc = new SparkContext(conf)
+    //创建RDD
+    val rdd: RDD[Int] = sc.makeRDD(1 to 10, 2)
+
+    println(rdd.fold(0)(_ + _))
+    //打印结果:55
+
+
+  }
+}
+
+~~~
+
+
+
+##### 5.3.9 saveAsTextFile
+
+~~~scala
+package cn.xhjava.spark.rdd.action
+
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkConf, SparkContext}
+
+/**
+  * 将数据集的元素以textfile的形式保存到HDFS文件系统或者其他支持的文件系统，
+  * 对于每个元素，Spark将会调用toString方法，将它装换为文件中的文本
+  */
+object Spark_Action_saveAsTextFile {
+  def main(args: Array[String]): Unit = {
+
+    val conf = new SparkConf().setMaster("local[3]").setAppName("Spark_Action_saveAsTextFile")
+    val sc = new SparkContext(conf)
+    //创建RDD
+    val rdd: RDD[Int] = sc.makeRDD(1 to 10, 2)
+
+    rdd.saveAsTextFile("outpath")
+    //打印结果:
+
+  }
+}
+
+~~~
+
+
+
+##### 5.3.10 saveAsSequenceFile
+
+~~~scala
+package cn.xhjava.spark.rdd.action
+
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkConf, SparkContext}
+
+/**
+  * 将数据集中的元素以Hadoop sequencefile的格式保存到指定的目录下，
+  * 可以使HDFS或者其他Hadoop支持的文件系统
+  */
+object Spark_Action_saveAsSequenceFile {
+  def main(args: Array[String]): Unit = {
+
+    val conf = new SparkConf().setMaster("local[3]").setAppName("Spark_Action_saveAsSequenceFile")
+    val sc = new SparkContext(conf)
+    //创建RDD
+    val rdd: RDD[Int] = sc.makeRDD(1 to 10, 2)
+
+
+    //打印结果:
+
+  }
+}
+
+~~~
+
+
+
+##### 5.3.11 saveAsObjectFile
+
+~~~
+package cn.xhjava.spark.rdd.action
+
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkConf, SparkContext}
+
+/**
+  * 用于将RDD中的元素序列化成对象，存储到文件中
+  */
+object Spark_Action_saveAsObjectFile {
+  def main(args: Array[String]): Unit = {
+
+    val conf = new SparkConf().setMaster("local[3]").setAppName("Spark_Action_saveAsObjectFile")
+    val sc = new SparkContext(conf)
+    //创建RDD
+    val rdd: RDD[Int] = sc.makeRDD(1 to 10, 2)
+
+    rdd.saveAsObjectFile("outpath")
+    //打印结果:
+
+  }
+}
+
+~~~
+
+
+
+##### 5.3.12 countByKey
+
+~~~scala
+package cn.xhjava.spark.rdd.action
+
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkConf, SparkContext}
+
+/**
+  * 针对(K,V)类型的RDD，返回一个(K,Int)的map，表示每一个key对应的元素个数
+  */
+object Spark_Action_countByKey {
+  def main(args: Array[String]): Unit = {
+
+    val conf = new SparkConf().setMaster("local[3]").setAppName("Spark_Action_countByKey")
+    val sc = new SparkContext(conf)
+    //创建RDD
+    val rdd: RDD[(Int, Int)] = sc.makeRDD(List((1, 3), (1, 2), (1, 4), (2, 3), (3, 6), (3, 8)), 3)
+
+    rdd.collect().foreach(println)
+    //打印结果:
+    //    (1,3)
+    //    (1,2)
+    //    (1,4)
+    //    (2,3)
+    //    (3,6)
+    //    (3,8)
+
+  }
+}
+
+~~~
+
+
+
+##### 5.3.13 foreach
+
+~~~scala
+package cn.xhjava.spark.rdd.action
+
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkConf, SparkContext}
+
+/**
+  * 在数据集的每一个元素上，运行函数func进行更新
+  */
+object Spark_Action_foreach {
+  def main(args: Array[String]): Unit = {
+
+    val conf = new SparkConf().setMaster("local[3]").setAppName("Spark_Action_foreach")
+    val sc = new SparkContext(conf)
+    //创建RDD
+    val rdd: RDD[Int] = sc.makeRDD(1 to 10, 2)
+
+    rdd.take(3).foreach(println)
+    //打印结果:
+    //1
+    //2
+    //3
+
+  }
+}
+
+~~~
+
+
+
+
+
 
 

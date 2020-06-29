@@ -21,10 +21,10 @@ object Spark_datasource_FileSave {
     val df: DataFrame = spark.read.format("json").load("in/people.json")
 
     df.write.format("").mode(SaveMode.Append).save()
-    SaveMode.ErrorIfExists //如果文件存在，则报错
-    SaveMode.Append //追加
-    SaveMode.Overwrite //覆盖写入
-    SaveMode.Ignore //数据存在则忽略
+    //    SaveMode.ErrorIfExists //如果文件存在，则报错
+    //    SaveMode.Append //追加
+    //    SaveMode.Overwrite //覆盖写入
+    //    SaveMode.Ignore //数据存在则忽略
 
   }
 }

@@ -16,12 +16,12 @@ object A_HelloWorld {
       .setAppName("Spark Streaming Demo")
     //2.实时数据分析环境对象
     //采集周期：以指定的时间为周期采集实时数据
-    val ssc = new StreamingContext(conf,Seconds(5))
-    //远程监控端口
-    val rid: ReceiverInputDStream[String] = ssc.socketTextStream("118.89.20.151",9999)
+    val ssc = new StreamingContext(conf, Seconds(5))
+    //远程监控端口  nc -lk 9998
+    val rid: ReceiverInputDStream[String] = ssc.socketTextStream("192.168.0.112", 9998)
     //解析
     val dstream: DStream[String] = rid.flatMap(_.split(" "))
-    val dstream2: DStream[(String, Int)] = dstream.map((_,1)).reduceByKey(_+_)
+    val dstream2: DStream[(String, Int)] = dstream.map((_, 1)).reduceByKey(_ + _)
     dstream2.print()
 
     //启动SparkStreaming最重要的设置
