@@ -10,7 +10,6 @@ import org.apache.spark.streaming.kafka010.{CanCommitOffsets, HasOffsetRanges, K
 import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.{SparkConf, SparkContext}
-import org.slf4j.LoggerFactory
 
 
 /**
@@ -44,6 +43,14 @@ object E_DataSourceFromKafka {
           println(record.value())
         }
       })
+
+      //用于更新offset
+      for (offset <- offsetRanges) {
+        offset.partition
+        offset.topic
+        offset.fromOffset
+        offset.untilOffset
+      }
       // some time later, after outputs have completed
       stream.asInstanceOf[CanCommitOffsets].commitAsync(offsetRanges)
     }
