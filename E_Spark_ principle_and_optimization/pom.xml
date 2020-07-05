@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cn.xhjava.spark</groupId>
-    <artifactId>E_Spark_ principle_and_optimization</artifactId>
+    <artifactId>E_Spark_principle_and_optimization</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.alibaba</groupId>
